@@ -34,8 +34,7 @@ spec:
           env:
             - name: ZOO_SERVERS #attention required for beginners : zookeeper-1.zookeeper is read as <pod_name>.<service>
               value: "server.1=zookeeper-0.zookeeper:2888:3888 \
-                      server.2=zookeeper-1.zookeeper:2888:3888 \
-                      server.3=zookeeper-2.zookeeper:2888:3888" 
+                      server.2=zookeeper-1.zookeeper:2888:3888" 
           volumeMounts:
             - name: data
               mountPath: /data
