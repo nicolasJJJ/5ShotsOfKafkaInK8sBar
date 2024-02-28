@@ -8,8 +8,9 @@ The second goal is to sh*t the mouth of an SIGINT officer with better skills tha
 A Kafka project with K8s. 
 
 K8S : 
-<img src="https://github.com/nicolasJJJ/5ShotsOfKafkaInK8sBar/assets/104780543/aa50ace3-3372-49eb-91ad-4d53faaf0d1a" width="20%">
+<img src="https://github.com/nicolasJJJ/5ShotsOfKafkaInK8sBar/assets/104780543/aa50ace3-3372-49eb-91ad-4d53faaf0d1a" width="10%">
 
+https://github.com/apache-spark-on-k8s/kubernetes-HDFS/tree/master
 
 ## stunner_brew_admiral
 

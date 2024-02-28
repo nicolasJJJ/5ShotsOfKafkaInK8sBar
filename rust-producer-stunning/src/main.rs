@@ -1,9 +1,9 @@
 use std::time::Duration;
-
-
+use reqwest::Error;
 use rdkafka::config::ClientConfig;
 use rdkafka::message::OwnedHeaders;
 use rdkafka::producer::{FutureProducer, FutureRecord};
+
 
 
 #[tokio::main]
@@ -44,4 +44,24 @@ async fn main() {
   for future in futures {
     println!("Future completed. Result: {:?}", future.await);
   }
+}
+
+#[tokio::main]
+async fn readAPI() -> Result<String, Error> {
+    // L'URL de l'API que tu souhaites appeler
+    let url = "https://api.exemple.com/data";
+
+    // Envoie une requête GET à l'URL
+    let response = reqwest::get(url).await?;
+    let body;
+    // Assure-toi que la requête a réussi
+    if response.status().is_success() {
+        // Parse la réponse en texte
+        body = response.text().await?;
+        println!("Réponse de l'API: {:?}", body);
+    } else {
+        println!("Erreur lors de la requête à l'API");
+    }
+
+    Ok(body)
 }
