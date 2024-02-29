@@ -1,0 +1,15 @@
+{
+    "apis": [
+      {
+        "name" : "POLLUTION",
+        "url": "http://api.openweathermap.org/data/2.5/air_pollution?lat={LAT}8&lon={LON}&appid={KEY}",
+        "params": [{"lon": "1234", "lat": "1456"}, {"lon": "4567", "lat": "7896"}]
+      },
+      {
+        "name" : "WEATHER",
+        "url": "https://api.openweathermap.org/data/2.5/weather?lat={LAT}8&lon={LON}&appid={KEY}",
+        "params": [{"lat": "42"}, {"lon": "24"}]
+      }
+    ]
+  }
+  

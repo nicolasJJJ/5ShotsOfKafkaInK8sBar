@@ -1,7 +1,7 @@
 # goal
 The main goal is to publish some recreatives projects for me to learn, exchange with people knowing more than me and maybe offer me new opportunities for data engineering projects.
 
-The second goal is to sh*t the mouth of an SIGINT officer with better skills than me with his "Bambee" sweater. WTf, a Bambee sweater !! It's time to show who's on the top of food chain.
+The second goal is to sh*t the mouth of a DGSE recruiter with a "Bambee" sweater. WTf, a Bambee sweater !! It's time to show these intelligences services clowns who's on the top of food chain.
 
 
 # 5ShotsOfKafkaInK8sBar
@@ -12,15 +12,19 @@ K8S :
 
 https://github.com/apache-spark-on-k8s/kubernetes-HDFS/tree/master
 
-## stunner_brew_admiral
+## rust producer stunning
 
 The cargo directory containing the Rust producer
 
 ## Configs folder
-Contains configs read by microK8S to start the services, pdbs, deployments and all.
+Contains configs read by microK8S to start the services, pdbs, deployments and pvcs.
 
 ```
-microk8s.kubectl apply -f configs/
+kubectl apply -f configs/
 ```
 
-maybe i'll start with a bash file that will make every steps.
+## Data sources / dashboard
+
+Graphs comparing air quality and weather in quiet zones like Le Vésinet vs a urban zone like Saint Denis
+
+openweathermaps.com

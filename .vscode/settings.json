@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./rust-producer-stunning/Cargo.toml"
+    ]
+}
