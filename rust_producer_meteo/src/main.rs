@@ -93,9 +93,7 @@ async fn read_api() -> Result<String, reqwest::Error> {
     // L'URL de l'API que tu souhaites appeler
     //Le Vésinet [48.8928, 2.1331]
     //Clé API : 589f74f07d7072d01dd30f1a2dc96dd2
-    // pollution : http://api.openweathermap.org/data/2.5/air_pollution?lat=48.8928&lon=2.1331&appid=589f74f07d7072d01dd30f1a2dc96dd2
-    // weather : https://api.openweathermap.org/data/2.5/weather?lat=48.8928&lon=2.1331&appid=589f74f07d7072d01dd30f1a2dc96dd2
-    let url = "http://api.openweathermap.org/data/2.5/air_pollution?lat=48.8928&lon=2.1331&appid=589f74f07d7072d01dd30f1a2dc96dd2";
+    let url = "http://api.openweathermap.org/data/2.5/air_pollution?lat=48.8928&lon=2.1331&appid=";
 
     let result = reqwest::get(url).await?.text().await; // On tente d'obtenir le body directement.
 
