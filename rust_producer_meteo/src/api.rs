@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ConfigAPI {
     pub apis: Vec<ApiParameters>,
@@ -9,6 +10,13 @@ pub struct ConfigAPI {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ApiParameters {
     pub name: String,
+    pub api : String,
     pub url: String,
     pub params: Vec<HashMap<String, String>>,
+
+}
+
+#[derive(Deserialize)]
+pub struct Apikey {
+    pub key: String,
 }

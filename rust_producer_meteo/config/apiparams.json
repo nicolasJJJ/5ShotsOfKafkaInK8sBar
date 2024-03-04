@@ -2,13 +2,15 @@
     "apis": [
       {
         "name" : "POLLUTION",
+        "api" : "OPENWEATHERMAP",
         "url": "http://api.openweathermap.org/data/2.5/air_pollution?lat={LAT}8&lon={LON}&appid={KEY}",
-        "params": [{"lon": "1234", "lat": "1456"}, {"lon": "4567", "lat": "7896"}]
+        "params": [{"LON": "2.1331", "LAT": "48.8928"}, {"LON": "5.40", "LAT": "43.3"}]
       },
       {
         "name" : "WEATHER",
+        "api" : "OPENWEATHERMAP",
         "url": "https://api.openweathermap.org/data/2.5/weather?lat={LAT}8&lon={LON}&appid={KEY}",
-        "params": [{"lat": "42"}, {"lon": "24"}]
+        "params": [{"LAT": "48.8928", "LON": "2.1331"}]
       }
     ]
   }
