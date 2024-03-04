@@ -16,7 +16,19 @@ pub struct ApiParameters {
 
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Apikey {
-    pub key: String,
+    pub keys: Vec<HashMap<String, String>>,
+}
+
+impl Apikey {
+    pub fn find_value_by_key(&self, search_key: &str) -> Option<String> {
+        for key_map in &self.keys {
+            if let Some(value) = key_map.get(search_key) {
+                return Some(value.clone());
+            }
+        }
+        None
+    }
+
 }

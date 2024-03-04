@@ -12,34 +12,49 @@ use std::collections::HashMap;
 async fn main() {
     println!("sel !");
 
-    let api_keys = load_keys();
-    match api_keys {
-        Ok(api_keys)=> {     
-            let config_api = load_config();
-            match config_api{
-                Ok(conf) => {
-                    for api in conf.apis {
-                        println!("clé d'API {}", api_keys.get(&api.api).unwrap());
-                        for param in api.params.clone() {
-                            let mut url = api.url.clone();
-                            for (key, value) in param{
-                                url = url.replace(&format!("{{{}}}", key), &value);
-                            }
-                            //api.change_api_url(url) ;
-                            url = url.replace(&format!("{{{}}}", "KEY"), &api_keys.get(&api.api).unwrap());
-                            println!("------------ url {}", url);
-                            let body_api = read_api(url).await;
-                            match body_api{
-                                Ok(body) => println!("Réponse reçue : {}", body), // Si on a un body, on l'affiche.
-                                Err(e) => println!("Erreur lors de la récupération de la réponse: {}", e), // Si on a une erreur, on l'affiche.
-                            }
-                        }
-                    }
-                }
-                Err(e) => println!("Erreur lors de la récupération des configuations: {}", e),
-            }
+    //let mut handles = vec![];
+
+    //Loading Apikey objects.
+    let api_keys = match load_keys() {
+        Ok(keys) => keys,
+        Err(e) => {
+            println!("Erreur lors de la récupération des clés: {}", e);
+            return;
         }
-        Err(er) => println!("Erreur lors de la récupération des clés: {}", er),
+    };
+
+
+    //Loading ConfigAPI object
+    let config_api = match load_config() {
+        Ok(conf) => conf,
+        Err(e) => {
+            println!("Erreur lors de la récupération des configurations: {}", e);
+            return;
+        }
+    };
+
+    for api in config_api.apis {
+        if let Some(key) = api_keys.find_value_by_key(&api.api) {
+            for param in api.params.clone() {
+                let mut url = api.url.clone();
+                for (key, valeur) in param{
+                    url = url.replace(&format!("{{{}}}", key), &valeur);
+                }
+                url = url.replace(&format!("{{{}}}", "KEY"), &key);
+                let body_api = read_api(url.clone()).await;
+                match body_api{
+                    Ok(body) => println!("Réponse reçue : {}", body), 
+                    Err(e) => {
+                        println!("Erreur lors de la récupération de la réponse: {}", e);
+                        return;
+                     } 
+                }
+            }
+        } else {
+            println!("Key not found for : {}. Check the apikey.json file or the apiparams.json one.", &api.api);
+        }
+
+  
     }
 }
 
@@ -50,9 +65,9 @@ fn load_config() -> serde_json::Result<api::ConfigAPI> {
     Ok(config)
 }
 
-fn load_keys() -> serde_json::Result<HashMap<String, String>> {
+fn load_keys() -> serde_json::Result<api::Apikey> {
     let data = fs::read_to_string("./config/apikey.json").expect("Impossible de récupérer les clés d'APIs");
-    let config: HashMap<String, String> = serde_json::from_str(&data)?;
+    let config: api::Apikey = serde_json::from_str(&data)?;
     Ok(config)
 }
 
@@ -96,19 +111,8 @@ async fn produce() {
   }
 }
 
-
-
-
-async fn read_api(url_ : String) -> Result<String, reqwest::Error> {
-    // L'URL de l'API que tu souhaites appeler
-    //Le Vésinet [48.8928, 2.1331]
-    //Clé API : 
-    // pollution : http://api.openweathermap.org/data/2.5/air_pollution?lat=48.8928&lon=2.1331&appid=
-    // weather : https://api.openweathermap.org/data/2.5/weather?lat=48.8928&lon=2.1331&appid=
-    let url = "http://api.openweathermap.org/data/2.5/air_pollution?lat=43.38&lon=5.40&appid=bf4ab52cb6a03054f24eef039dab0dec";
-
+async fn read_api(url : String) -> Result<String, reqwest::Error> {
     let result = reqwest::get(url).await?.text().await; // On tente d'obtenir le body directement.
-
     match result {
         Ok(body) => {
             Ok(body)
