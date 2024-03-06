@@ -20,6 +20,7 @@ The cargo directory containing the Rust producer
 Contains configs read by microK8S to start the services, pdbs, deployments and pvcs.
 
 ```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 kubectl apply -f configs/
 ```
 

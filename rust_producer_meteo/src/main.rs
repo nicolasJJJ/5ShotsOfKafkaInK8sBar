@@ -1,12 +1,25 @@
+#[macro_use] extern crate lazy_static;
 use std::time::Duration;
-use reqwest::Error;
 use rdkafka::config::ClientConfig;
 use rdkafka::message::OwnedHeaders;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use serde_json;
 use std::fs;
 mod api;
-use std::collections::HashMap;
+use tokio;
+use futures;
+use rdkafka::error::KafkaError;
+use std::sync::Mutex;
+
+
+lazy_static! {
+    static ref PRODUCER: Mutex<FutureProducer> = Mutex::new(
+        ClientConfig::new()
+            .set("bootstrap.servers", "localhost:9092")
+            .create()
+            .expect("Failed to create producer")
+    );
+}
 
 #[tokio::main]
 async fn main() {
@@ -32,30 +45,63 @@ async fn main() {
             return;
         }
     };
+    let mut handles = Vec::new();
+
+    //Producer here, used later
+    
+
+        //let messages_to_send = vec!["Message 1", "Message 2", "Message 3"];
+
+        /*for message in messages_to_send {
+            // Prépare le message. Ici, tu ajustes selon ton topic et tes besoins
+            let record = FutureRecord::to("mon_topic")
+                .payload(message)
+                .key("ma_clef");
+    
+            // Envoie le message
+            match producer.send(record, Duration::from_secs(0)).await {
+                Ok(delivery) => println!("Message envoyé : {:?}", delivery),
+                Err((e, _)) => println!("Erreur d'envoi : {}", e),
+            }
+        }*/
 
     for api in config_api.apis {
         if let Some(key) = api_keys.find_value_by_key(&api.api) {
             for param in api.params.clone() {
                 let mut url = api.url.clone();
+                let api_n = api.name.clone();
                 for (key, valeur) in param{
                     url = url.replace(&format!("{{{}}}", key), &valeur);
                 }
                 url = url.replace(&format!("{{{}}}", "KEY"), &key);
-                let body_api = read_api(url.clone()).await;
-                match body_api{
-                    Ok(body) => println!("Réponse reçue : {}", body), 
-                    Err(e) => {
-                        println!("Erreur lors de la récupération de la réponse: {}", e);
-                        return;
-                     } 
-                }
+                let handle = tokio::spawn(async move {
+                    match read_api(url).await {
+                        Ok(body) => {
+                            println!("Réponse reçue : {}", body);
+                            
+                            match produce(body.clone(), &api_n).await {
+                                Ok(_) => println!("Message envoyé"),
+                                Err(e) => println!("Erreur lors de l'envoi du message: {:?}", e),
+                            }
+                        },
+                        Err(e) => println!("Erreur lors de la récupération de la réponse: {}", e),
+                    }
+                });
+                handles.push(handle);
             }
         } else {
             println!("Key not found for : {}. Check the apikey.json file or the apiparams.json one.", &api.api);
         }
-
-  
     }
+    futures::future::join_all(handles).await;
+
+    /*for result in results {
+        match result {
+            Ok(body) => println!("Réponse reçue),
+            Ok(Err(e)) => println!("Erreur lors de la récupération de la réponse: {}", e),
+            Err(e) => println!("Une tâche a paniqué : {:?}", e),
+        }
+    }*/
 }
 
 
@@ -72,47 +118,33 @@ fn load_keys() -> serde_json::Result<api::Apikey> {
 }
 
 
+//: &FutureProducer = &ClientConfig::new()
+async fn produce(body: String, topic : &String) -> Result<(), KafkaError> {
 
-async fn produce() {
-  //let brokers = "kafka:9092";
-  let topic = "sample_topic";
-  let producer: &FutureProducer = &ClientConfig::new()
-  .set("bootstrap.servers", "kafka:9092")  // Remplacement par ton adresse de serveur Kafka
-  .set("message.timeout.ms", "5000")
-  .create()
-  .expect("Producer creation error");
+  let producer_guard = PRODUCER.lock().unwrap().clone();
 
-  let futures = (0..5)
-  .map(|i| async move {
-      // The send operation on the topic returns a future, which will be
-      // completed once the result or failure from Kafka is received.
-      let delivery_status = producer
-          .send(
-              FutureRecord::to(topic)
-                  .payload(&format!("Message {}", i))
-                  .key(&format!("Key {}", i))
-                  /* .headers(OwnedHeaders::new().add(
-                      "header_key",
-                      "header_value",
-                  ))*/,
-              Duration::from_secs(0),
-          )
-          .await;
+  let record = FutureRecord::to(topic)
+  .key(&topic)
+  .payload(&body);
 
+  producer_guard.send(record, Duration::from_secs(0)).await
+        .map(|delivery| {
+            println!("Message envoyé : {:?}", delivery);
+            ()
+        })
+        .map_err(|(e, _)| {
+            println!("Erreur d'envoi : {}", e);
+            e
+        })
+    
       // This will be executed when the result is received.
-      println!("Delivery status for message {} received", i);
-      delivery_status
-  })
-  .collect::<Vec<_>>();
 
 // This loop will wait until all delivery statuses have been received.
-  for future in futures {
-    println!("Future completed. Result: {:?}", future.await);
-  }
+
 }
 
 async fn read_api(url : String) -> Result<String, reqwest::Error> {
-    let result = reqwest::get(url).await?.text().await; // On tente d'obtenir le body directement.
+    let result = reqwest::get(url).await?.text().await; 
     match result {
         Ok(body) => {
             Ok(body)

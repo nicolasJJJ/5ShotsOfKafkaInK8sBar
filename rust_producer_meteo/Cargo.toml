@@ -12,3 +12,5 @@ reqwest = "0.11"
 toml = "0.5.8"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+futures = "0.3"
+lazy_static = "1.4.0"
