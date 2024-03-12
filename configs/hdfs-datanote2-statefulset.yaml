@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hadoop-datanode2
+spec:
+  serviceName: "hadoop-datanode2"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hadoop-datanode2
+  template:
+    metadata:
+      labels:
+        app: hadoop-datanode2
+    spec:
+      containers:
+      - name: datanode2
+        image: bde2020/hadoop-datanode:latest
+        ports:
+        - containerPort: 9864
+        volumeMounts:
+        - name: pvc-datanode2
+          mountPath: "/mnt/hdfs/datanode2"
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-datanode2
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksql-server
+  template:
+    metadata:
+      labels:
+        app: ksql-server
+    spec:
+      containers:
+      - name: ksql-server
+        image: confluentinc/cp-ksql-server:latest
+        ports:
+        - containerPort: 8088
+        env:
+        - name: KSQL_LISTENERS
+          value: "http://0.0.0.0:8088"
+        - name: KSQL_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+          value: "http://schema-registry:8081"

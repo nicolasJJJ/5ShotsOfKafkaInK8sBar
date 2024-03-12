@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hdfs-namenode
+  labels:
+    component: hdfs-name
+spec:
+  serviceName: hdfs-namenode
+  replicas: 1
+  selector:
+    matchLabels:
+      component: hdfs-name
+  template:
+    metadata:
+      labels:
+        component: hdfs-name
+    spec:
+      containers:
+      - name: hdfs-name
+        image: bde2020/hadoop-namenode:latest
+        env:
+        - name: CLUSTER_NAME
+          value: hdfs-k8s
+        ports:
+        - containerPort: 8020
+          name: nn-rpc
+        - containerPort: 50070
+          name: nn-web
+        volumeMounts:
+        - name: pvc-namenode
+          mountPath: "/mnt/hdfs/namenode"
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-namenode
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
