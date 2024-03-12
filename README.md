@@ -1,7 +1,7 @@
 # goal
 The main goal is to publish some recreatives projects for me to learn, exchange with people knowing more than me and maybe offer me new opportunities for data engineering projects.
 
-The second goal is to sh*t the mouth of a DGSE recruiter with a "Bambee" sweater. WTf, a Bambee sweater !! It's time to show these intelligences services clowns who's on the top of food chain.
+TODO : Repaint my white hair because of this cluster and make my producer work.
 
 
 # 5ShotsOfKafkaInK8sBar
@@ -12,20 +12,40 @@ K8S :
 
 https://github.com/apache-spark-on-k8s/kubernetes-HDFS/tree/master
 
-## rust producer stunning
+## rust producer meteo
 
-The cargo directory containing the Rust producer
+The cargo directory containing the Rust producer.
+Adjust the config files in rust_producer_meteo/config/apiparams.json
+Create rust_producer_meteo/config/apikey.json
+
+```
+{
+    "keys": [
+        {"OPENWEATHERMAP": "KEY ..." },
+        {"OTHER_API ": "OTHER KEY ..."}
+    ]
+}
+
+```
 
 ## Configs folder
-Contains configs read by microK8S to start the services, pdbs, deployments and pvcs.
+Contains configs read by minikube to start the services, pdbs, deployments and pvcs.
+
+This cluster would contain : 
+- HDFS
+- Kafka + Schema Registry & Zookeeper
+- Spark consumer with Scala
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-kubectl apply -f configs/
+sh src/minikube/start-env.sh
 ```
+
+## Spark
+
+Not created yet. Would be a script made to "normalize" different sources.
 
 ## Data sources / dashboard
 
-Graphs comparing air quality and weather in quiet zones like Le Vésinet vs a urban zone like Saint Denis
+Graphs comparing air quality and weather in quiet zones like Le Vésinet vs a urban zone like Saint-Denis
 
 openweathermaps.com
