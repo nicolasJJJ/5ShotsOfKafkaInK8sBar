@@ -15,7 +15,7 @@ use std::sync::Mutex;
 lazy_static! {
     static ref PRODUCER: Mutex<FutureProducer> = Mutex::new(
         ClientConfig::new()
-            .set("bootstrap.servers", "localhost:9092")
+            .set("bootstrap.servers", "192.168.49.2:32092")
             .create()
             .expect("Failed to create producer")
     );

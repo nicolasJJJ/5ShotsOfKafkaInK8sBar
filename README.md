@@ -1,7 +1,7 @@
 # goal
 The main goal is to publish some recreatives projects for me to learn, exchange with people knowing more than me and maybe offer me new opportunities for data engineering projects.
 
-TODO : Repaint my white hair because of this cluster and make my producer work.
+
 
 
 # LittleMeteoProject
@@ -17,6 +17,9 @@ https://github.com/apache-spark-on-k8s/kubernetes-HDFS/tree/master
 The cargo directory containing the Rust producer.
 Adjust the config files in rust_producer_meteo/config/apiparams.json
 Create rust_producer_meteo/config/apikey.json
+
+TODO : Dynamically get the Minikube IP.
+For cloud and K8s : definite a DNS for a probable change of IP ?
 
 ```
 {
@@ -39,6 +42,8 @@ This cluster would contain :
 ```
 sh src/minikube/start-env.sh
 ```
+
+TODO : In Kafka Statefulset, Dynamically get the minikube IP for External gateway
 
 ## Spark
 
